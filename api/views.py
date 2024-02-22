@@ -4,7 +4,7 @@ from django.views import View
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from django.forms.models import model_to_dict
 class InfoView(View):
     """
     info 相关接口
@@ -100,9 +100,34 @@ class DrfCategoryView(APIView):
         访问这个 url 就会 
         增加分类
         获取请求
+
+        因为遵循rest 
+        request 。post 不会有值
+        所以
         """
-       
-        name = request.POST.get('name')# 拿数据
+        # import json
+        # info_dict= json.loads(request.body)
+        # 现在可以使用request.data
+        # print(request.data)
+        # print(request.body) # 输出原始输出 
+        
+        # print(request.POST)# 对原始数据进行了处理
+
+    
+        # name = request.POST.get('name')# 拿数据
         # name = 'IT'
-        models.Category.objects.create(name=name)
+        models.Category.objects.create(**request.data)
         return Response('success')
+    def get(self,request,*args,**kwargs):
+        """获取所有的文章分类"""
+        pk = kwargs.get('pk')
+        if not pk:
+            queryset = models.Category.objects.all().values("id","name")
+            data_list = list(queryset )
+            return Response(data_list)
+        else:
+            catetgory_object = queryset = models.Category.objects.filter(id=pk).first()
+            data = model_to_dict(catetgory_object)
+            return Response(data)
+    
+    

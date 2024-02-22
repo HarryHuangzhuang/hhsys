@@ -24,6 +24,8 @@ urlpatterns = [
     # 遵循restful 规范
     path(r'drf/info/', views.DrfInfoView.as_view()),
     path(r'drf/category/', views.DrfCategoryView.as_view()),
+    path(r'drf/category/<int:pk>/', views.DrfCategoryView.as_view()),
+    
     # get 获取
     # post 添加
     # put 更新
