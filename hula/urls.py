@@ -17,11 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.contrib import admin
-from api import views
+from api import views 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path(r'info/', views.info),
+    path(r'info/', views.InfoView.as_view()),
     # 遵循restful 规范
+    path(r'drf/info/', views.DrfInfoView.as_view()),
+    path(r'drf/category/', views.DrfCategoryView.as_view()),
     # get 获取
     # post 添加
     # put 更新
