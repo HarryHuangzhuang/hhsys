@@ -5,6 +5,10 @@ from django.views import View
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.forms.models import model_to_dict
+
+
+
+from api import serializer
 class InfoView(View):
     """
     info 相关接口
@@ -101,7 +105,7 @@ class DrfCategoryView(APIView):
         增加分类
         获取请求
 
-        因为遵循rest 
+        因为遵循rest     帮助转换数据   使用了
         request 。post 不会有值
         所以
         """
@@ -129,5 +133,72 @@ class DrfCategoryView(APIView):
             catetgory_object = queryset = models.Category.objects.filter(id=pk).first()
             data = model_to_dict(catetgory_object)
             return Response(data)
-    
-    
+    def delete(self,request,*args,**kwargs):
+        """"delete"""
+        pk = kwargs.get('pk') 
+        models.Category.objects.filter(id=pk).delete()
+        return Response('delete success')
+    def put(self,request,*args,**kwargs):
+        pk = kwargs.get('pk') 
+        models.Category.objects.filter(id=pk).update(**request.data)
+        return Response("更新成功")
+
+
+
+"""  serializers 可以序列话 and 校验 """
+
+from rest_framework import serializers
+from rest_framework.generics import ListAPIView, RetrieveAPIView,CreateAPIView,DestroyAPIView
+
+class  NewCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Category
+        fields = "__all__"
+        # fields = ['id','name'] 表示就展示 只展示 id 和 name 列
+
+class NewCategoryView(ListAPIView, RetrieveAPIView,CreateAPIView,DestroyAPIView):
+    queryset = models.Category.objects.all()
+    serializer_class = NewCategorySerializer
+
+# class NewCategoryView(APIView):
+    # def get(self,request,*args,**kwargs):
+    #     pk = kwargs.get('pk')
+    #     if not pk:
+    #         queryset = models.Category.objects.all()
+    #         ser = NewCategorySerializer(instance= queryset,many = True)
+    #         return Response(ser.data)
+    #     else:
+    #         model_object = models.Category.objects.filter(id = pk).first()
+    #         ser = NewCategorySerializer(instance= queryset,many = False)
+    #         return Response(ser.data)
+    # def post(self,request,*args,**kwargs):
+    #     ser = NewCategorySerializer(data = request.data)
+    #     if ser.is_valid():
+    #         ser.save()
+    #         return Response(ser.data)
+    #     else:
+    #         return Response(ser.errors)
+    # def put(self,request,*args,**kwargs):
+    #     pk = kwargs.get('pk')
+    #     category_object = models.Category.objects.filter(id=pk).first()
+    #     ser = NewCategorySerializer(instance=category_object,data= request.data)
+
+    #     if ser.is_valid():
+    #         ser.save()
+    #         return Response(ser.data)
+    #     return Response(ser.errors)
+    # def delete(self,request,*args,**kwargs):
+    #     pk = kwargs.get('pk')
+    #     models.Category.objects.filter(id = pk).delete()
+    #     return Response("删除成功")
+
+
+
+
+class ArticleView(APIView):
+    def get(self,request,*args,**kwargs):
+        queryset = models.Article.objects.all()
+
+        ser = serializer.Articleserializers(instance=queryset,many = True)
+
+        return Response(ser.data)

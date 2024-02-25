@@ -25,7 +25,15 @@ urlpatterns = [
     path(r'drf/info/', views.DrfInfoView.as_view()),
     path(r'drf/category/', views.DrfCategoryView.as_view()),
     path(r'drf/category/<int:pk>/', views.DrfCategoryView.as_view()),
+    path(r'new/category/', views.NewCategoryView.as_view()),
+    path(r'new/category/<int:pk>/', views.NewCategoryView.as_view()),
+
+    #get 获取列表
+    #post 增加数据
+    path(r'drf/article/', views.ArticleView.as_view()),
+    path(r'drf/article/<int:pk>/', views.ArticleView.as_view()),
     
+
     # get 获取
     # post 添加
     # put 更新
