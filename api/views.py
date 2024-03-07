@@ -202,3 +202,102 @@ class ArticleView(APIView):
         ser = serializer.Articleserializers(instance=queryset,many = True)
 
         return Response(ser.data)
+    def post(self,request,*args,**kwargs):
+        ser = serializer.Articleserializers(data=request.data)
+        if ser.is_valid():
+            ser.save()
+            return Response(ser.data)
+        return Response(ser.errors)
+    
+    
+
+class NewArticleView(APIView):
+    def get(self,request,*args,**kwargs):
+        pk = kwargs.get('pk')
+        if not pk:
+            #实现所有数据
+            queryset = models.Article.objects.all()
+            ser = serializer.NewArticleserializers(instance = queryset, many = True)
+            return Response(ser.data)
+        #实现拿一条数据
+        article_object = models.Article.objects.filter(id = pk ).first()
+        ser = serializer.NewArticleserializers(instance=article_object,many = False)
+        return Response(ser.data)
+    
+    def post(self,request,*args,**kwargs):
+        ser = serializer.FormNewArticleserializers(data=request.data)
+        if ser.is_valid():
+            ser.save()
+            return Response(ser.data)
+        return Response(ser.errors) 
+    def put(self,request,*args,**kwargs):
+        pk = kwargs.get('pk')
+     
+        article_object = models.Article.objects.filter(id=pk).first()
+        ser = serializer.FormNewArticleserializers(instance=article_object,data= request.data)
+
+        if ser.is_valid():
+            ser.save()
+            return Response(ser.data)
+        return Response(ser.errors)
+    def delete(self,request,*args,**kwargs):
+        pk = kwargs.get('pk')
+        models.Article.objects.filter(id = pk).delete()
+        return Response("删除成功")
+    
+class PageArticleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Article
+        fields = "__all__" 
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.pagination import LimitOffsetPagination
+class hulaLimitOffsetPagination(LimitOffsetPagination):
+    # 一定要设置最大值
+    max_limit =2
+
+from rest_framework.generics import GenericAPIView
+class PageArticleView(APIView):
+    def get(self,request,*arg,**kargs):
+        queryset = models.Article.objects.all()
+
+        # 方式一 仅数据
+        """
+        page_object = PageNumberPagination()
+
+        # 分页的的时候 要根据 request的参数 返回分野 
+        result = page_object.paginate_queryset(queryset,request,self)
+        # print(result) 
+        ser = PageArticleSerializer(instance=result,many = True)
+        return Response(ser.data)
+        """
+
+        """
+        # 方式二 数据➕分页信息
+        page_object = PageNumberPagination()
+
+        # 分页的的时候 要根据 request的参数 返回分野 
+        result = page_object.paginate_queryset(queryset,request,self)
+        # print(result) 
+        ser = PageArticleSerializer(instance=result,many = True)
+        return page_object.get_paginated_response(ser.data)
+        
+       """
+        """ 
+        # 方式三  数据+部分分页信息
+        page_object = PageNumberPagination()
+
+        # 分页的的时候 要根据 request的参数 返回分野 
+        result = page_object.paginate_queryset(queryset,request,self)
+        # print(result) 
+        ser = PageArticleSerializer(instance=result,many = True)
+        return Response({'count':page_object.page.paginator.count,"result":ser.data})
+        """
+        page_object = LimitOffsetPagination()
+
+        # 分页的的时候 要根据 request的参数 返回分野 
+        result = page_object.paginate_queryset(queryset,request,self)
+        # print(result) 
+        ser = PageArticleSerializer(instance=result,many = True)
+        return Response(ser.data)
+    
+

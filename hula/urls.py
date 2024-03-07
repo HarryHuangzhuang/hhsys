@@ -20,18 +20,22 @@ from django.contrib import admin
 from api import views 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path(r'info/', views.InfoView.as_view()),
+    path('info/', views.InfoView.as_view()),
     # 遵循restful 规范
-    path(r'drf/info/', views.DrfInfoView.as_view()),
-    path(r'drf/category/', views.DrfCategoryView.as_view()),
-    path(r'drf/category/<int:pk>/', views.DrfCategoryView.as_view()),
-    path(r'new/category/', views.NewCategoryView.as_view()),
-    path(r'new/category/<int:pk>/', views.NewCategoryView.as_view()),
+    path('drf/info/', views.DrfInfoView.as_view()),
+    path('drf/category/', views.DrfCategoryView.as_view()),
+    path('drf/category/<int:pk>/', views.DrfCategoryView.as_view()),
+    path('new/category/', views.NewCategoryView.as_view()),
+    path('new/category/<int:pk>/', views.NewCategoryView.as_view()),
 
     #get 获取列表
     #post 增加数据
-    path(r'drf/article/', views.ArticleView.as_view()),
-    path(r'drf/article/<int:pk>/', views.ArticleView.as_view()),
+    path('drf/article/', views.ArticleView.as_view()),
+    path('drf/article/<int:pk>/', views.ArticleView.as_view()),
+
+    path('new/article/', views.NewArticleView.as_view()),
+    path('new/article/<int:pk>/', views.NewArticleView.as_view()),
+    path('page/article/', views.PageArticleView.as_view()),
     
 
     # get 获取
